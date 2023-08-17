@@ -1,0 +1,80 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+@model List<Quiz>
+
+<label>Please Username  :</label>
+<input id="Username"/>
+<div class="d-flex">
+    <div style="margin-right: 26%;">Question </div>
+    <div>Answer </div>
+    </div>
+<div id="QuestionAnswer">
+@foreach (var item in Model)
+{
+                    <div>
+                        <input id="id_@item.Id" value="@item.Questions" hidden="hidden"/>
+                        <input id="question_@item.Id" value="@item.Questions" readonly />
+                        <input id="answer_@item.Id" value=""/>
+                    </div>
+}
+    <button type="button" class="btn btn-primary" onclick="Onay()">Answer</button>
+</div>
+<div>
+    <label class="w-25">Success Point  :</label>
+    <input type="text" value="" id="SuccessPoint" readonly />
+</div>
+
+<div>
+    <label class="w-25">Wrong Message:</label>
+    @*<input type="text" value="" id="WrongPoint" width="70" readonly />*@
+    <textarea data-val-maxlength-max="300" rows="10" value="" id="WrongPoint" class="w-75" readonly> </textarea>
+</div>
+
+<button type="button" class="btn btn-primary w-25" onclick="HomeReturn()" value="" id="SuccessPoint" readonly>HomeReturn</button>
+
+<script>
+
+    function Onay(){
+        var list = [].slice.call(document.getElementById('QuestionAnswer').children);
+        var name = document.getElementById('Username').value
+        console.log(list)
+        var idList=  []
+        list.forEach(function(x){
+            console.log(x.childNodes[1])
+            if (x.childNodes[1] != undefined){
+                 var sr =  x.childNodes[1].id
+                console.log(sr.split('_')[1])
+                var question = document.getElementById('question_' + sr.split('_')[1]).value
+                var answer = document.getElementById('answer_' + sr.split('_')[1]).value
+                var model = {
+                        Name:name,
+                        QuizId:sr.split('_')[1],
+                        Answer:answer
+                }
+                idList.push(model)
+            }
+        })
+        console.log(idList) //QuestionAnswerResponse
+
+
+        $.ajax({
+            type: "POST",
+            url: "QuestionAnswerResponse",
+            data: { userAnswers:idList },
+            success: function (data) {
+                console.log(data)
+                document.getElementById('SuccessPoint').value = data.successPoint
+                document.getElementById('WrongPoint').value = data.wrong
+            }
+        });
+    }
+
+    function HomeReturn(){
+        window.location = 'Index'
+    }
+
+</script>

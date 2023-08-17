@@ -1,0 +1,29 @@
+﻿<div class="form-outline mb-4">
+    <label class="form-label" for="form2Example17">Name</label>
+    <input type="text" id="nameForm" class="form-control form-control-lg" />
+</div>
+
+<div class="form-outline mb-4">
+    <label class="form-label" for="form2Example27">Password</label>
+    <input type="password" id="password" class="form-control form-control-lg" />
+</div>
+
+<div class="pt-1 mb-4">
+    <input class="btn btn-dark btn-lg btn-block" type="button" onclick="Login()" />Login
+</div>
+
+<a href="#!" class="small text-muted">Terms of use.</a>
+<a href="#!" class="small text-muted">Privacy policy</a>
+
+<script>
+    function Login() {
+        var nameForm = document.getElementById("nameForm").value
+        var pass = document.getElementById("password").value
+
+        $.ajax({
+            type: "POST",
+            url: "QuestionProcessPage",
+            data: { nameForm: nameForm, password: pass }
+        });
+    }
+</script>

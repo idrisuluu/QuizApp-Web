@@ -1,0 +1,125 @@
+﻿
+
+@model List<Quiz>;
+<style>
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+</style>
+@*                <div>Question</div>
+                <div>Answer</div>*@
+            @foreach (var item in Model)
+            {
+                <div>
+                    <input id="id_@item.Id" value="@item.Questions" hidden="hidden"/>
+                    <input id="question_@item.Id" value="@item.Questions"/>
+                    <input id="answer_@item.Id" value="@item.Answer"/>
+                    <button type="button" class="btn btn-primary" onclick="Update(@item.Id)">Update</button>
+                    <button type="button" class="btn btn-danger" onclick="Delete(@item.Id,'@item.Questions','@item.Answer')">Delete</button>
+                </div>
+            }
+
+
+<a href="#" id="AddModal" onclick="AddedPage()" role="button" class="btn btn-primary" data-toggle="modal"> Add Question</a>
+
+<div class="modal" tabindex="-1" role="dialog" id="details-modal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Question</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <div>Question</div>
+                    <input id="question" value="" />
+                </div>
+                <div>
+                    <div>Answer</div>
+                    <input id="answer" value="" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="saveAddQuestion()">Add Quesion</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="CloseModal()">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function Update(Id){
+        var Question=document.getElementById("question_"+Id).value
+        var Answwer = document.getElementById("answer_" + Id).value
+
+        $.ajax({
+            type: "POST",
+            url: "Update",
+            data: { Id: Id, Questions: Question, Answer: Answwer },
+            success: function (data) {
+                location.reload();
+            }
+        });
+        console.log(Question, Answwer)
+    }
+
+    function Delete(Id, Question, Answwer) {
+        console.log("selam", Id, Question, Answwer)
+        $.ajax({
+            type: "POST",
+            url: "Delete",
+            data: { Id: Id, Questions: Question, Answer: Answwer },
+            success: function (data) {
+                     location.reload();
+            }
+        });
+        console.log(Question, Answwer)
+    }
+
+    function saveAddQuestion(){
+        var Question = document.getElementById("question").value
+        var Answwer = document.getElementById("answer").value
+
+        $.ajax({
+            type: "POST",
+            url: "AddQuestion",
+            data: { Id: 0, Questions: Question, Answer: Answwer }, 
+            success: function (data) {
+                $('#details-modal').modal('hide');
+                location.reload();
+
+            }
+
+        });
+        console.log(Question, Answwer)
+    }
+
+    function CloseModal(){
+        $('#details-modal').modal('hide');
+
+    }
+
+</script>
+
+<script>
+    function AddedPage(){
+        $('#details-modal').modal('show');
+
+        //$('.modal-body').load(`Home/ModalPopup`);
+    }
+</script>
